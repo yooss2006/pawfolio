@@ -10,6 +10,10 @@ export default {
   theme: {
   	extend: {
   		colors: {
+			"theme-primary": "hsl(265, 64%, 42%)", // #4729b2
+			"theme-secondary": "hsl(257, 54%, 51%)", // #694fbf
+			"theme-accent": "hsl(348, 78%, 56%)", // #e5334f
+			"theme-background": "hsl(300, 12%, 96%)", // #f0edef
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {
@@ -49,7 +53,11 @@ export default {
   				'3': 'hsl(var(--chart-3))',
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
-  			}
+  			},
+  			'brand-red': '#e5334f',
+  			'brand-purple': '#694fbf',
+  			'brand-deep-purple': '#4729b2',
+  			'brand-light': '#f0edef',
   		},
   		borderRadius: {
   			lg: 'var(--radius)',

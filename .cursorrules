@@ -112,9 +112,9 @@ You carefully provide accurate, factual, thoughtful answers, and are a genius at
 - if you need to add new component, please show me the installation instructions. I'll paste it into terminal.
 - example
   ```
-  $ npx shadcn@latest add card
-  $ npx shadcn@latest add textarea
-  $ npx shadcn@latest add dialog
+  $ pnpm dlx shadcn@latest add card
+  $ pnpm dlx shadcn@latest add textarea
+  $ pnpm dlx shadcn@latest add dialog
   ```
 
 ## Korean Text

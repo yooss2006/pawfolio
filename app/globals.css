@@ -8,6 +8,11 @@ body {
 
 @layer base {
   :root {
+    --theme-primary: 265 64% 42%; /* #4729b2 */
+    --theme-secondary: 257 54% 51%; /* #694fbf */
+    --theme-accent: 348 78% 56%; /* #e5334f */
+    --theme-background: 300 12% 96%; /* #f0edef */
+
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;

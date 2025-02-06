@@ -45,6 +45,15 @@
 - **공유하기 버튼** 클릭 시 전시공간의 **URL**을 복사/공유
 - **SNS 공유** 버튼을 통해 전시공간의 이미지를 캡쳐하여 SNS에 직접 업로드할 수 있도록 지원 (또는 메타 태그 활용)
 
+### 5. 로그인 및 사용자 관리
+- **간편한 로그인/회원가입** 프로세스 제공
+  - 이메일과 비밀번호를 통한 기본 인증
+  - 초기 단계에서는 로컬 스토리지 활용 (추후 Supabase Auth로 마이그레이션 예정)
+- **로그인 상태 유지** 기능
+- **보안을 고려한 비밀번호 관리**
+  - 비밀번호 최소 길이 및 복잡성 요구사항 적용
+  - 비밀번호 해싱 처리 (crypto-js 활용)
+
 ---
 ## Documentation
 ### 필요한 패키지와 라이브러리
@@ -54,6 +63,7 @@
 - **Supabase** : 인증, DB, 스토리지 등 백엔드 서버리스 기능(이 프로젝트에서는 DB로만 활용)
 - **Drizzle** : TypeScript 기반 ORM, Supabase Drizzle DB 연동 및 스키마 정의
 - **lucide-react** : 아이콘 라이브러리
+- **crypto-js** : 비밀번호 해싱 및 보안 처리
 
 ---
 ## Design Guide
@@ -65,11 +75,16 @@
 ## Current File Structure
 📦 pawfolio
 ├── 📂 app
+│ ├── 📂 login
+│ │ └── 📄 page.tsx
 │ ├── 📄 globals.css
 │ ├── 📄 layout.tsx
 │ └── 📄 page.tsx
 ├── 📂 components
 │ ├── 📂 ui
+│ │ ├── 📄 button.tsx
+│ │ ├── 📄 card.tsx
+│ │ └── 📄 input.tsx
 │ └── 📂 features
 ├── 📂 lib
 │ └── 📄 utils.ts
