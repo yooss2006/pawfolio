@@ -53,6 +53,8 @@
 - **shadcn/ui** : Tailwind CSS와 호환되는 고수준 UI 컴포넌트 라이브러리
 - **Supabase** : 인증, DB, 스토리지 등 백엔드 서버리스 기능(이 프로젝트에서는 DB로만 활용)
 - **Drizzle** : TypeScript 기반 ORM, Supabase Drizzle DB 연동 및 스키마 정의
+- **lucide-react** : 아이콘 라이브러리
+
 ---
 ## Design Guide
 - **컨셉**: 전시회장에서 각종 작품을 관람하듯, **시각적이고 감각적인** 분위기
