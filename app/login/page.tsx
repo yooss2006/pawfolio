@@ -55,8 +55,8 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-6">
-      <Card className="w-full max-w-md bg-white shadow-xl rounded-xl p-6">
+    <div className="h-[100dvh] flex items-center justify-center p-4">
+      <Card className="w-full bg-white shadow-lg">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-extrabold text-theme-primary">Pawfolio</CardTitle>
           <CardDescription className="text-gray-400 text-lg font-medium">

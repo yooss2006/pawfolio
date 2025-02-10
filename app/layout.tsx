@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { cn } from "@/lib/utils";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,11 +24,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ko">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={cn(
+          `${geistSans.variable} ${geistMono.variable}`,
+          "bg-gray-100",
+        )}
       >
-        {children}
+        <main className="h-full max-w-[600px] mx-auto flex flex-col bg-white shadow-2xl">
+        <header className="w-full py-4 bg-theme-primary text-white font-bold text-center">
+          <h1 className="text-lg tracking-wide">Pawfolio</h1>
+        </header>
+          <div className="flex-1">
+            {children}
+          </div>
+          <footer className="w-full py-2 text-center text-sm text-theme-secondary/70 bg-white/70">
+        &copy; 2025 Pawfolio Company
+          </footer>
+        </main>
       </body>
     </html>
   );
