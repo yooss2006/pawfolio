@@ -1,5 +1,5 @@
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -12,11 +12,6 @@ export const calculateGridPosition = (index: number, cols: number) => {
   return { row, col };
 };
 
-export const isValidGridPosition = (
-  row: number,
-  col: number,
-  maxRows: number,
-  maxCols: number
-) => {
+export const isValidGridPosition = (row: number, col: number, maxRows: number, maxCols: number) => {
   return row >= 0 && row < maxRows && col >= 0 && col < maxCols;
 };
