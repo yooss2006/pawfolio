@@ -1,11 +1,11 @@
 import GridContainer from '@/components/features/grid/grid-container';
-import FloatButton from '@/components/features/float-button/float-button';
+import CreateContentDrawer from '@/components/features/create-content/create-content-drawer';
 
 export default function Home() {
   return (
     <div className="relative h-full">
       <GridContainer />
-      <FloatButton aria-label="콘텐츠 추가" />
+      <CreateContentDrawer />
     </div>
   );
 }
