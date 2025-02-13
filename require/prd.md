@@ -102,6 +102,10 @@
 
 📦 pawfolio
 ├── 📂 app
+│ ├── 📂 api
+│ │ └── 📂 movies
+│ │ └── 📂 search
+│ │ └── 📄 route.ts
 │ ├── 📂 login
 │ │ └── 📄 page.tsx
 │ ├── 📄 globals.css
@@ -111,28 +115,30 @@
 │ ├── 📂 ui
 │ │ ├── 📄 button.tsx
 │ │ ├── 📄 card.tsx
+│ │ ├── 📄 drawer.tsx
 │ │ ├── 📄 form.tsx
 │ │ ├── 📄 input.tsx
 │ │ └── 📄 label.tsx
 │ └── 📂 features
+│ ├── 📂 create-content
+│ │ ├── 📂 drawer-contents
+│ │ │ ├── 📄 drawer-content-container.tsx
+│ │ │ ├── 📄 movie-search.tsx
+│ │ │ ├── 📄 question-answer-content.tsx
+│ │ │ ├── 📄 question-drawer-header.tsx
+│ │ │ └── 📄 question-selection-content.tsx
+│ │ ├── 📄 create-content-drawer.tsx
+│ │ └── 📄 types.ts
+│ ├── 📂 float-button
+│ │ └── 📄 float-button.tsx
 │ └── 📂 grid
 │ └── 📄 grid-container.tsx
 ├── 📂 lib
+│ ├── 📂 constants
+│ │ └── 📄 questions.ts
 │ └── 📄 utils.ts
 ├── 📂 public
-│ ├── 📄 file.svg
-│ ├── 📄 globe.svg
-│ ├── 📄 next.svg
-│ ├── 📄 vercel.svg
-│ └── 📄 window.svg
+│ └── ...
 ├── 📂 require
 │ └── 📄 prd.md
-├── 📄 .eslintrc.json
-├── 📄 .gitignore
-├── 📄 components.json
-├── 📄 next.config.ts
-├── 📄 package.json
-├── 📄 postcss.config.mjs
-├── 📄 README.md
-├── 📄 tailwind.config.ts
-└── 📄 tsconfig.json
+└── 📄 기타 설정 파일들
