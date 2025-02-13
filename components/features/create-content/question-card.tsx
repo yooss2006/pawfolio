@@ -4,11 +4,19 @@ import { QUESTIONS } from '@/lib/constants/questions';
 import { cn } from '@/lib/utils';
 import { FC } from 'react';
 
-export function QuestionCardList() {
+interface QuestionCardListProps {
+  onQuestionSelect: (question: Question) => void;
+}
+
+export function QuestionCardList({ onQuestionSelect }: QuestionCardListProps) {
   return (
     <div className="flex flex-col gap-4 p-4">
       {QUESTIONS.map((question) => (
-        <QuestionCard key={question.id} question={question} />
+        <QuestionCard
+          key={question.id}
+          question={question}
+          onClick={() => onQuestionSelect(question)}
+        />
       ))}
     </div>
   );
@@ -16,11 +24,13 @@ export function QuestionCardList() {
 
 interface QuestionCardProps {
   question: Question;
+  onClick: () => void;
 }
 
-const QuestionCard: FC<QuestionCardProps> = ({ question }) => {
+const QuestionCard: FC<QuestionCardProps> = ({ question, onClick }) => {
   return (
     <div
+      onClick={onClick}
       className={cn(
         'group relative w-full rounded-xl p-6 text-left transition-all',
         'bg-gradient-to-r from-white to-theme-background hover:shadow-xl',
