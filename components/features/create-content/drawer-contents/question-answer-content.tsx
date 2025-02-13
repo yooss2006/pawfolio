@@ -1,5 +1,6 @@
 import { Question } from '@/lib/constants/questions';
 import { QuestionDrawerHeader } from './question-drawer-header';
+import { MovieSearch } from './movie-search';
 
 interface QuestionAnswerContentProps {
   question: Question;
@@ -10,8 +11,7 @@ export function QuestionAnswerContent({ question, onBack }: QuestionAnswerConten
   return (
     <>
       <QuestionDrawerHeader title={question.title} onBack={onBack} />
-
-      <div className="p-4">{/* 여기에 답변 입력 폼을 추가할 수 있습니다 */}</div>
+      <div className="flex-1 overflow-y-auto">{question.id === 'movie' && <MovieSearch />}</div>
     </>
   );
 }
