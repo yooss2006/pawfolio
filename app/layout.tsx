@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { cn } from '@/lib/utils';
+import { Toaster } from '@/components/ui/toaster';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -34,6 +35,7 @@ export default function RootLayout({
           <footer className="w-full bg-white/70 py-2 text-center text-sm text-theme-secondary/70">
             &copy; 2025 Pawfolio Company
           </footer>
+          <Toaster />
         </main>
       </body>
     </html>

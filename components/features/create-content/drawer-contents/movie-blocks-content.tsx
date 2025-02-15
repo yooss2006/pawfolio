@@ -5,6 +5,10 @@ import { QuestionDrawerHeader } from './question-drawer-header';
 import { cn } from '@/lib/utils';
 import { MovieBlock } from './movie-block';
 import { useEffect, useState } from 'react';
+import { BLOCK_SIZES, BlockVariant } from '@/lib/constants/blocks';
+import { useToast } from '@/hooks/use-toast';
+import { DrawerClose } from '@/components/ui/drawer';
+import { PartyPopper, AlertCircle } from 'lucide-react';
 
 interface MovieBlocksContentProps {
   movie: Movie;
@@ -23,15 +27,6 @@ const GRID = {
   GAP: 0
 };
 
-// 블록 타입별 차지하는 그리드 셀 크기
-const BLOCK_SIZES = {
-  tiny: { cols: 1, rows: 1 }, // 1x1 블록
-  tall: { cols: 1, rows: 3 }, // 1x3 블록
-  medium: { cols: 2, rows: 3 }, // 2x3 블록
-  wide: { cols: 3, rows: 1 }, // 3x1 블록
-  large: { cols: 3, rows: 2 } // 3x2 블록
-} as const;
-
 // 블록들의 초기 위치 재조정
 const INITIAL_POSITIONS = {
   tiny: { col: 3, row: 0 }, // 1x1 블록
@@ -43,6 +38,7 @@ const INITIAL_POSITIONS = {
 
 export function MovieBlocksContent({ movie, onBack }: MovieBlocksContentProps) {
   const [cellSize, setCellSize] = useState(GRID.CELL_SIZE.DEFAULT);
+  const { toast } = useToast();
 
   useEffect(() => {
     const updateCellSize = () => {
@@ -70,6 +66,42 @@ export function MovieBlocksContent({ movie, onBack }: MovieBlocksContentProps) {
     window.addEventListener('resize', updateCellSize);
     return () => window.removeEventListener('resize', updateCellSize);
   }, []);
+
+  const handleBlockSelect = (variant: BlockVariant) => {
+    try {
+      // 선택한 블록 정보를 로컬 스토리지에 저장
+      const blockData = {
+        movie,
+        blockSize: BLOCK_SIZES[variant],
+        variant,
+        createdAt: new Date().toISOString()
+      };
+
+      // 기존 블록 데이터 배열 가져오기
+      const existingBlocks = JSON.parse(localStorage.getItem('blocks') || '[]');
+
+      // 새 블록 추가
+      localStorage.setItem('blocks', JSON.stringify([...existingBlocks, blockData]));
+
+      // 성공 토스트 메시지 표시
+      toast({
+        title: '블록 저장 완료',
+        description: '선택하신 블록이 저장되었습니다.',
+        duration: 3000,
+        variant: 'success',
+        icon: <PartyPopper className="size-5 animate-bounce text-green-500" />
+      });
+    } catch (error) {
+      // 에러 발생 시 토스트 메시지
+      toast({
+        title: '저장 실패',
+        description: '블록 저장 중 오류가 발생했습니다.',
+        variant: 'destructive',
+        duration: 3000,
+        icon: <AlertCircle className="size-5 text-red-500" />
+      });
+    }
+  };
 
   return (
     <>
@@ -100,29 +132,31 @@ export function MovieBlocksContent({ movie, onBack }: MovieBlocksContentProps) {
 
             {/* 블록들 */}
             {Object.entries(INITIAL_POSITIONS).map(([variant, position]) => {
-              const size = BLOCK_SIZES[variant as keyof typeof BLOCK_SIZES];
+              const size = BLOCK_SIZES[variant as BlockVariant];
               const width = size.cols * cellSize;
               const height = size.rows * cellSize;
               const left = position.col * cellSize;
               const top = position.row * cellSize;
 
               return (
-                <div
-                  key={variant}
-                  className={cn(
-                    'absolute transition-all duration-300',
-                    'animate-in fade-in zoom-in',
-                    'hover:z-10 hover:scale-[1.02]'
-                  )}
-                  style={{
-                    left,
-                    top,
-                    width,
-                    height
-                  }}
-                >
-                  <MovieBlock movie={movie} variant={variant as keyof typeof BLOCK_SIZES} />
-                </div>
+                <DrawerClose key={variant} asChild>
+                  <div
+                    onClick={() => handleBlockSelect(variant as BlockVariant)}
+                    className={cn(
+                      'absolute transition-all duration-300',
+                      'animate-in fade-in zoom-in',
+                      'cursor-pointer hover:z-10 hover:scale-[1.02]'
+                    )}
+                    style={{
+                      left,
+                      top,
+                      width,
+                      height
+                    }}
+                  >
+                    <MovieBlock movie={movie} variant={variant as BlockVariant} />
+                  </div>
+                </DrawerClose>
               );
             })}
           </div>
