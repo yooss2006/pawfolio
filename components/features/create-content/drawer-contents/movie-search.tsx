@@ -20,6 +20,22 @@ interface MovieResponse {
   page: number;
 }
 
+interface MovieSearchProps {
+  onMovieSelect: (movie: Movie) => void;
+  searchState: {
+    query: string;
+    setQuery: (query: string) => void;
+    movies: Movie[];
+    setMovies: (movies: Movie[]) => void;
+    currentPage: number;
+    setCurrentPage: (page: number) => void;
+    totalPages: number;
+    setTotalPages: (pages: number) => void;
+    hasSearched: boolean;
+    setHasSearched: (searched: boolean) => void;
+  };
+}
+
 /**
  * 1. 큰 덩어리를 세분화하여 관심사(역할)를 분리했습니다.
  *    - SearchForm: 검색 폼 (query 상태, submit)
@@ -33,13 +49,21 @@ interface MovieResponse {
  *    (scrollbar-track-rounded, scrollbar-thumb-rounded 등)
  */
 
-export function MovieSearch() {
-  const [query, setQuery] = useState('');
-  const [movies, setMovies] = useState<Movie[]>([]);
+export function MovieSearch({ onMovieSelect, searchState }: MovieSearchProps) {
+  const {
+    query,
+    setQuery,
+    movies,
+    setMovies,
+    currentPage,
+    setCurrentPage,
+    totalPages,
+    setTotalPages,
+    hasSearched,
+    setHasSearched
+  } = searchState;
+
   const [isLoading, setIsLoading] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
-  const [hasSearched, setHasSearched] = useState(false);
 
   /**
    * handleSearch: API 호출로 영화 검색을 수행합니다.
@@ -92,7 +116,7 @@ export function MovieSearch() {
       {/* 검색 결과 리스트 */}
       {!isLoading && movies.length > 0 && (
         <>
-          <MovieList movies={movies} />
+          <MovieList movies={movies} onMovieSelect={onMovieSelect} />
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
@@ -140,7 +164,13 @@ function SearchForm({
  *  - poster_path 여부에 따라 Poster를 다르게 렌더링
  *  - 스크롤바를 좀 더 세련되게 보이도록 Tailwind 스크롤바 관련 클래스를 적용
  */
-function MovieList({ movies }: { movies: Movie[] }) {
+function MovieList({
+  movies,
+  onMovieSelect
+}: {
+  movies: Movie[];
+  onMovieSelect: (movie: Movie) => void;
+}) {
   return (
     <div
       className={cn(
@@ -150,7 +180,7 @@ function MovieList({ movies }: { movies: Movie[] }) {
       )}
     >
       {movies.map((movie) => (
-        <MovieCard key={movie.id} movie={movie} />
+        <MovieCard key={movie.id} movie={movie} onClick={() => onMovieSelect(movie)} />
       ))}
     </div>
   );
@@ -160,11 +190,12 @@ function MovieList({ movies }: { movies: Movie[] }) {
  * MovieCard: 단일 영화 카드
  *  - 포스터가 있으면 이미지, 없으면 placeholder 렌더링
  */
-function MovieCard({ movie }: { movie: Movie }) {
+function MovieCard({ movie, onClick }: { movie: Movie; onClick: () => void }) {
   return (
     <div
+      onClick={onClick}
       className={cn(
-        'group flex gap-4 rounded-lg border p-4',
+        'group flex cursor-pointer gap-4 rounded-lg border p-4',
         'bg-white/80 shadow-sm backdrop-blur-sm transition-all duration-300',
         'hover:border-theme-primary/50 hover:shadow-md hover:shadow-theme-primary/5'
       )}
