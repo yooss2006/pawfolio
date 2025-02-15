@@ -1,6 +1,5 @@
 'use client';
 
-import { Question } from '@/lib/constants/questions';
 import { QuestionDrawerHeader } from './question-drawer-header';
 import { MovieSearch } from './movie-search';
 import { QuestionAnswerProps } from '../types';

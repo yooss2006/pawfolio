@@ -2,8 +2,10 @@
 
 import { Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { ButtonHTMLAttributes } from 'react';
 
-interface FloatButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
+// 빈 인터페이스 대신 타입 확장
+type FloatButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
 
 export default function FloatButton({ className, ...props }: FloatButtonProps) {
   return (

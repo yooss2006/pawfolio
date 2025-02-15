@@ -50,7 +50,6 @@ export function MovieBlocksContent({ movie, onBack }: MovieBlocksContentProps) {
       // 각 셀 크기별 필요한 전체 너비 계산
       const defaultWidth = GRID.COLS * GRID.CELL_SIZE.DEFAULT;
       const smWidth = GRID.COLS * GRID.CELL_SIZE.SM;
-      const xsWidth = GRID.COLS * GRID.CELL_SIZE.XS;
 
       // 가용 너비에 따라 적절한 셀 크기 선택
       if (availableWidth >= defaultWidth) {
@@ -92,7 +91,7 @@ export function MovieBlocksContent({ movie, onBack }: MovieBlocksContentProps) {
         icon: <PartyPopper className="size-5 animate-bounce text-green-500" />
       });
     } catch (error) {
-      // 에러 발생 시 토스트 메시지
+      console.error('블록 저장 중 오류:', error);
       toast({
         title: '저장 실패',
         description: '블록 저장 중 오류가 발생했습니다.',

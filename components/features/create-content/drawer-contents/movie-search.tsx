@@ -5,14 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Search, Film, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-interface Movie {
-  id: number;
-  title: string;
-  release_date: string;
-  poster_path: string | null;
-  overview: string;
-}
+import { Movie } from '@/lib/types/movie';
+import Image from 'next/image';
 
 interface MovieResponse {
   results: Movie[];
@@ -138,7 +132,7 @@ function SearchForm({
   onSearch
 }: {
   query: string;
-  setQuery: React.Dispatch<React.SetStateAction<string>>;
+  setQuery: (query: string) => void;
   isLoading: boolean;
   onSearch: (e: React.FormEvent, page?: number) => void;
 }) {
@@ -221,17 +215,22 @@ function MoviePoster({ posterPath, title }: { posterPath: string | null; title: 
 
   if (posterPath) {
     return (
-      <img
-        src={`${IMAGE_BASE_URL}${posterPath}`}
-        alt={title}
-        className="h-[138px] w-[92px] rounded-md object-cover"
-      />
+      <div className="relative aspect-[2/3] h-[138px] w-auto shrink-0 overflow-hidden">
+        <Image
+          src={`${IMAGE_BASE_URL}${posterPath}`}
+          alt={title}
+          fill
+          className="rounded-md object-cover"
+          sizes="92px"
+          priority
+        />
+      </div>
     );
   }
 
   // 포스터가 없을 경우 동일한 크기의 영역을 잡아주되, 아이콘만 가운데 표시
   return (
-    <div className="flex h-[138px] w-[211px] items-center justify-center rounded-md border bg-gray-100">
+    <div className="flex aspect-[2/3] h-[138px] w-auto shrink-0 items-center justify-center rounded-md border bg-gray-100">
       <Film className="h-8 w-8 text-gray-500" />
     </div>
   );

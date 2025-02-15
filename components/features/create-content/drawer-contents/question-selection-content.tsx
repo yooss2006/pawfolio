@@ -1,4 +1,3 @@
-import { DrawerHeader, DrawerTitle, DrawerDescription } from '@/components/ui/drawer';
 import { QuestionCardList } from '../question-card';
 import { Question } from '@/lib/constants/questions';
 import { QuestionDrawerHeader } from './question-drawer-header';

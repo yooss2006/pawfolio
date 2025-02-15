@@ -17,6 +17,7 @@ export async function GET(request: NextRequest) {
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
+    console.error('영화 검색 중 오류:', error);
     return NextResponse.json({ error: '영화 검색 중 오류가 발생했습니다' }, { status: 500 });
   }
 }
