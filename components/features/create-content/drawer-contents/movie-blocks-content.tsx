@@ -82,6 +82,9 @@ export function MovieBlocksContent({ movie, onBack }: MovieBlocksContentProps) {
       // 새 블록 추가
       localStorage.setItem('blocks', JSON.stringify([...existingBlocks, blockData]));
 
+      // 커스텀 이벤트 발생
+      window.dispatchEvent(new Event('localStorageChange'));
+
       // 성공 토스트 메시지 표시
       toast({
         title: '블록 저장 완료',

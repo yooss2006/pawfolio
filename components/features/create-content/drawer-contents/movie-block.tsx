@@ -5,11 +5,12 @@ import Image from 'next/image';
 interface MovieBlockProps {
   movie: Movie;
   variant: 'tiny' | 'tall' | 'medium' | 'wide' | 'large';
+  className?: string;
 }
 
 const TMDB_IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
 
-export function MovieBlock({ movie, variant }: MovieBlockProps) {
+export function MovieBlock({ movie, variant, className }: MovieBlockProps) {
   const imageUrl = `${TMDB_IMAGE_URL}${movie.poster_path}`;
 
   const renderContent = () => {
@@ -97,7 +98,7 @@ export function MovieBlock({ movie, variant }: MovieBlockProps) {
   };
 
   return (
-    <div className="h-full w-full p-2">
+    <div className={cn('h-full w-full p-2', className)}>
       <div
         className={cn(
           'h-full w-full shadow-lg transition-all',
