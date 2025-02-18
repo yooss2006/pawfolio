@@ -72,6 +72,9 @@ export default {
       },
       animation: {
         'scale-up-down': 'scale-up-down 1.0s ease-in-out infinite'
+      },
+      transitionTimingFunction: {
+        'bounce-in-out': 'cubic-bezier(0.68, -0.55, 0.265, 1.55)'
       }
     }
   },
