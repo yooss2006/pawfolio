@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Movie } from '@/lib/types/movie';
 import { BlockVariant } from '@/lib/constants/blocks';
-import { MovieBlock } from '../create-content/drawer-contents/movie-block';
+import { MovieBlock } from './movie-block';
 import { cn } from '@/lib/utils';
 import { X } from 'lucide-react';
 import { DragEndEvent } from '@dnd-kit/core';

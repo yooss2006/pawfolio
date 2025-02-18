@@ -6,7 +6,7 @@ import CreateContentDrawer from '@/components/features/create-content/create-con
 import { TemporaryBlocksContainer } from '@/components/features/temporary-blocks/temporary-blocks-container';
 import FloatButton from '@/components/features/float-button/float-button';
 import { useState } from 'react';
-import { MovieBlock } from '@/components/features/create-content/drawer-contents/movie-block';
+import { MovieBlock } from '@/components/features/temporary-blocks/movie-block';
 import { cn } from '@/lib/utils';
 
 export default function Home() {

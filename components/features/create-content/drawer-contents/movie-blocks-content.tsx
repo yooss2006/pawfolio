@@ -3,7 +3,7 @@
 import { Movie } from '@/lib/types/movie';
 import { QuestionDrawerHeader } from './question-drawer-header';
 import { cn } from '@/lib/utils';
-import { MovieBlock } from './movie-block';
+import { GridMovieBlock } from './grid-movie-block';
 import { useEffect, useState } from 'react';
 import { BLOCK_SIZES, BlockVariant } from '@/lib/constants/blocks';
 import { useToast } from '@/hooks/use-toast';
@@ -156,7 +156,7 @@ export function MovieBlocksContent({ movie, onBack }: MovieBlocksContentProps) {
                       height
                     }}
                   >
-                    <MovieBlock movie={movie} variant={variant as BlockVariant} />
+                    <GridMovieBlock movie={movie} variant={variant as BlockVariant} />
                   </div>
                 </DrawerClose>
               );
