@@ -30,13 +30,19 @@ export function MovieBlock({ movie, variant, className }: MovieBlockProps) {
 
       case 'tall': // 1x3
         return (
-          <div className="relative h-full w-full overflow-hidden rounded-lg">
+          <div className="relative h-[250px] w-full overflow-hidden rounded-lg md:h-[300px]">
             <Image
               src={imageUrl}
               alt={movie.title}
               fill
               className="object-cover object-[center_20%]"
               sizes="(max-width: 768px) 100vw, 33vw"
+              priority
+              style={{
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: 'center 20%'
+              }}
             />
           </div>
         );

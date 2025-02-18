@@ -1,9 +1,10 @@
 'use client';
 
-import { X, MessageSquare, LayoutGrid, Lightbulb, Package } from 'lucide-react';
+import { X, Lightbulb } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ButtonHTMLAttributes, useState } from 'react';
 import CreateContentDrawer from '../create-content/create-content-drawer';
+import { TemporaryBlocksButton } from '../temporary-blocks/temporary-blocks-button';
 
 type FloatButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   onToggleBlocks?: () => void;
@@ -21,7 +22,6 @@ export default function FloatButton({ className, onToggleBlocks, ...props }: Flo
       setIsVisible(true);
       setTimeout(() => setIsExpanded(true), 50);
     }
-    onToggleBlocks?.();
   };
 
   // 메인 버튼 스타일
@@ -30,15 +30,6 @@ export default function FloatButton({ className, onToggleBlocks, ...props }: Flo
     'bg-gradient-to-br from-theme-primary to-theme-primary shadow-lg',
     'hover:bg-gradient-to-tl hover:from-theme-primary hover:to-theme-accent',
     'transition-all duration-300'
-  );
-
-  // 확장 버튼 공통 스타일 (glassmorphism)
-  const expandedButtonClasses = cn(
-    'flex h-14 w-14 items-center justify-center rounded-full',
-    'bg-white/90 backdrop-blur-sm shadow-lg',
-    'border border-theme-primary/10',
-    'hover:border-theme-primary/20 hover:bg-theme-primary/5',
-    'hover:scale-105 transform transition-all duration-300'
   );
 
   return (
@@ -54,9 +45,13 @@ export default function FloatButton({ className, onToggleBlocks, ...props }: Flo
         {isVisible && (
           <>
             <CreateContentDrawer onButtonClick={handleMainButtonClick} />
-            <button onClick={handleMainButtonClick} className={expandedButtonClasses} {...props}>
-              <Package className="size-6 text-theme-primary" />
-            </button>
+            <TemporaryBlocksButton
+              onToggle={(e) => {
+                handleMainButtonClick();
+                onToggleBlocks?.();
+              }}
+              buttonProps={props}
+            />
           </>
         )}
       </div>
