@@ -1,16 +1,49 @@
 import { Movie } from '@/lib/types/movie';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
+import { useDraggable } from '@dnd-kit/core';
 
 interface MovieBlockProps {
   movie: Movie;
   variant: 'tiny' | 'tall' | 'medium' | 'wide' | 'large';
   className?: string;
+  isDraggable?: boolean;
+  id?: string;
+  dimensions?: {
+    width: number;
+    height: number;
+  };
 }
 
 const TMDB_IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
 
-export function MovieBlock({ movie, variant, className }: MovieBlockProps) {
+export function MovieBlock({
+  movie,
+  variant,
+  className,
+  isDraggable,
+  id,
+  dimensions
+}: MovieBlockProps) {
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
+    id: id || `movie-${movie.id}`,
+    data: {
+      movie,
+      variant,
+      dimensions,
+      isLargeScreen: typeof window !== 'undefined' ? window.innerWidth > 600 : true
+    },
+    disabled: !isDraggable
+  });
+
+  const style = transform
+    ? {
+        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+        zIndex: 999,
+        opacity: isDragging ? 0 : 1
+      }
+    : undefined;
+
   const imageUrl = `${TMDB_IMAGE_URL}${movie.poster_path}`;
 
   const renderContent = () => {
@@ -104,7 +137,16 @@ export function MovieBlock({ movie, variant, className }: MovieBlockProps) {
   };
 
   return (
-    <div className={cn('h-full w-full p-2', className)}>
+    <div
+      ref={isDraggable ? setNodeRef : undefined}
+      {...(isDraggable ? { ...attributes, ...listeners } : {})}
+      style={style}
+      className={cn(
+        'h-full w-full p-2',
+        className,
+        isDraggable && 'cursor-grab active:cursor-grabbing'
+      )}
+    >
       <div
         className={cn(
           'h-full w-full shadow-lg transition-all',

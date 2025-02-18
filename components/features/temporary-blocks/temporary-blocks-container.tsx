@@ -6,6 +6,7 @@ import { BlockVariant } from '@/lib/constants/blocks';
 import { MovieBlock } from '../create-content/drawer-contents/movie-block';
 import { cn } from '@/lib/utils';
 import { X } from 'lucide-react';
+import { DragEndEvent } from '@dnd-kit/core';
 
 interface BlockData {
   movie: Movie;
@@ -116,7 +117,7 @@ export function TemporaryBlocksContainer({ onClose }: TemporaryBlocksContainerPr
       case 'tall': // 1x3
         return {
           width: cellSize,
-          height: cellSize * 3 + 32 // 패딩과 갭 보정값 추가
+          height: isLargeScreen ? 300 : 250 // 하드코딩된 높이 값을 직접 사용
         };
       case 'medium': // 2x3
         return { width: cellSize * 2, height: cellSize * 3 };
@@ -161,6 +162,9 @@ export function TemporaryBlocksContainer({ onClose }: TemporaryBlocksContainerPr
             <MovieBlock
               movie={block.movie}
               variant={block.variant}
+              isDraggable={true}
+              id={`draggable-block-${block.movie.id}-${index}`}
+              dimensions={dimensions}
               className={cn(
                 '[&_h3]:text-sm [&_img]:!relative [&_img]:!h-full [&_img]:!w-full [&_img]:!object-cover',
                 isLargeScreen
