@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useDraggable } from '@dnd-kit/core';
 import { BlockVariant } from '@/lib/constants/blocks';
 import { DraggableBlock } from './draggable-block';
+import { BLOCK_SIZES } from '@/lib/constants/blocks';
 
 interface MovieBlockProps {
   movie: Movie;
@@ -48,109 +49,92 @@ export function MovieBlock({
 
   const imageUrl = `${TMDB_IMAGE_URL}${movie.poster_path}`;
 
-  const renderContent = () => {
-    switch (variant) {
-      case 'tiny': // 1x1
-        return (
-          <div className="relative h-full w-full overflow-hidden rounded-lg">
-            <Image
-              src={imageUrl}
-              alt={movie.title}
-              fill
-              className="object-cover object-[center_30%]"
-              sizes="(max-width: 768px) 100vw, 33vw"
-            />
-          </div>
-        );
+  // 미리보기 박스 크기 계산 (전체 크기의 18% - 약간 감소)
+  const previewBoxSize = Math.floor(dimensions.width * 0.18);
 
-      case 'tall': // 1x3
-        return (
-          <div className="relative h-[250px] w-full overflow-hidden rounded-lg md:h-[300px]">
-            <Image
-              src={imageUrl}
-              alt={movie.title}
-              fill
-              className="object-cover object-[center_20%]"
-              sizes="(max-width: 768px) 100vw, 33vw"
-              priority
-              style={{
-                height: '100%',
-                objectFit: 'cover',
-                objectPosition: 'center 20%'
-              }}
-            />
-          </div>
-        );
+  // 블록 형태 미리보기를 위한 계산
+  const blockSizeConfig = BLOCK_SIZES[variant];
+  const previewMaxSize = previewBoxSize * 0.7;
+  const previewCellSize = Math.min(
+    previewMaxSize / Math.max(blockSizeConfig.cols, blockSizeConfig.rows),
+    previewMaxSize / 3 // 최대 3칸으로 제한
+  );
 
-      case 'medium': // 2x3
-        return (
-          <div className="flex h-full w-full flex-col overflow-hidden rounded-lg">
-            <div className="relative h-2/3 w-full">
-              <Image
-                src={imageUrl}
-                alt={movie.title}
-                fill
-                className="object-cover object-[center_25%]"
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-            </div>
-            <div className="flex flex-1 flex-col justify-center bg-white p-4">
-              <h3 className="text-base font-bold text-theme-primary sm:text-lg">{movie.title}</h3>
-              <p className="line-clamp-2 text-xs text-gray-600 sm:text-sm">{movie.overview}</p>
-            </div>
-          </div>
-        );
-
-      case 'wide': // 3x1
-        return (
-          <div className="flex h-full w-full overflow-hidden rounded-lg bg-white">
-            <div className="relative h-full w-1/3">
-              <Image
-                src={imageUrl}
-                alt={movie.title}
-                fill
-                className="object-cover object-[center_35%]"
-                sizes="(max-width: 768px) 33vw, 25vw"
-              />
-            </div>
-            <div className="flex flex-1 items-center justify-center p-4">
-              <h3 className="text-base font-bold text-theme-primary sm:text-xl">{movie.title}</h3>
-            </div>
-          </div>
-        );
-
-      case 'large': // 3x2
-        return (
-          <div className="relative h-full w-full overflow-hidden rounded-lg">
-            <Image
-              src={imageUrl}
-              alt={movie.title}
-              fill
-              className="object-cover object-[center_30%]"
-              sizes="(max-width: 768px) 100vw, 75vw"
-            />
-            <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/80 to-transparent p-4">
-              <h3 className="text-base font-bold text-white sm:text-xl">{movie.title}</h3>
-              <p className="line-clamp-2 text-xs text-gray-200 sm:text-sm">{movie.overview}</p>
-            </div>
-          </div>
-        );
-    }
-  };
+  // 예상 높이 계산하여 폰트 크기 및 여백 조절
+  const isSmallHeight = dimensions.height < 110;
 
   const blockContent = (
     <div
       className={cn(
         'group relative overflow-hidden rounded-lg bg-white shadow-md',
         'transition-transform duration-200 hover:scale-[1.02] hover:shadow-lg',
+        'aspect-square',
         className
       )}
       style={{
         width: dimensions.width,
-        height: dimensions.height
+        height: dimensions.height,
+        minWidth: dimensions.width,
+        minHeight: dimensions.height
       }}
     >
-      {renderContent()}
+      {/* 영화 포스터 이미지 */}
+      <div className="relative h-full w-full">
+        <Image
+          src={imageUrl}
+          alt={movie.title}
+          fill
+          className="object-cover"
+          sizes={`(max-width: 400px) ${dimensions.width}px, (max-width: 768px) ${dimensions.width}px, ${dimensions.width}px`}
+        />
+
+        {/* 좌측 하단 제목 - 작은 화면에서 패딩 줄임 */}
+        <div
+          className={cn(
+            'absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/80 to-transparent',
+            isSmallHeight ? 'px-1.5 pb-1 pt-6' : 'px-2 pb-1.5 pt-8 md:px-3'
+          )}
+        >
+          <h3
+            className={cn(
+              'line-clamp-2 font-bold text-white',
+              isSmallHeight ? 'text-[8px] leading-tight' : 'text-xs leading-snug md:text-sm'
+            )}
+          >
+            {movie.title}
+          </h3>
+        </div>
+
+        {/* 우측 상단 블록 형태 표시 - 크기 및 위치 조정 */}
+        <div
+          className={cn(
+            'absolute flex items-center justify-center rounded-lg bg-black/80 p-0.5',
+            isSmallHeight ? 'right-1 top-1' : 'right-2 top-2 p-1 md:right-3 md:top-3'
+          )}
+          style={{ width: previewBoxSize, height: previewBoxSize }}
+        >
+          <div className="relative flex items-center justify-center">
+            <div
+              className="grid gap-[1px]"
+              style={{
+                gridTemplateColumns: `repeat(${blockSizeConfig.cols}, ${previewCellSize}px)`,
+                gridTemplateRows: `repeat(${blockSizeConfig.rows}, ${previewCellSize}px)`
+              }}
+            >
+              {Array.from({ length: blockSizeConfig.cols * blockSizeConfig.rows }).map((_, i) => (
+                <div
+                  key={`preview-cell-${i}`}
+                  className="border border-gray-400 bg-white"
+                  style={{
+                    width: previewCellSize,
+                    height: previewCellSize
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 

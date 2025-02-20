@@ -2,7 +2,6 @@ import { Drawer, DrawerContent, DrawerTrigger, DrawerClose } from '@/components/
 import { Button } from '@/components/ui/button';
 import { PackagePlus } from 'lucide-react';
 import { DrawerContentContainer } from './drawer-contents/drawer-content-container';
-import { cn } from '@/lib/utils';
 
 interface CreateContentDrawerProps {
   onButtonClick?: () => void;

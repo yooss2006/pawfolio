@@ -46,20 +46,21 @@ export default function Home() {
 
   return (
     <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-      <div className="relative flex h-full flex-col">
-        <div className="flex-1">
+      <div className="relative flex h-[100dvh] flex-col">
+        {/* 그리드 영역 - 화면 크기에 따라 유동적으로 조절 */}
+        <div className="min-h-0 flex-1">
           <GridContainer />
         </div>
 
-        {/* 하단 블록 저장소 영역 */}
-        <div className="mt-2">
+        {/* 하단 블록 저장소 영역 - 고정 높이 */}
+        <div className="shrink-0">
           <div className="relative mx-4 mb-4 rounded-2xl border bg-white/95 p-4 shadow-xl backdrop-blur-sm">
-            {/* 블록 스크롤 영역 */}
-            <div className="h-24 overflow-x-auto overflow-y-hidden">
+            {/* 블록 스크롤 영역 - 높이 축소 */}
+            <div className="h-24 overflow-y-hidden sm:h-32">
               <TemporaryBlocksScroll />
             </div>
 
-            {/* Drawer 버튼 - 오른쪽 하단에 겹치도록 배치 */}
+            {/* Drawer 버튼 위치 유지 */}
             <div className="absolute -bottom-2 -right-2 z-10">
               <CreateContentDrawer
                 onButtonClick={() => {}}
