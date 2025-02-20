@@ -57,7 +57,7 @@ export function MovieBlock({
               src={imageUrl}
               alt={movie.title}
               fill
-              className="object-cover object-[center_30%]"
+              className="object-cover"
               sizes="(max-width: 768px) 100vw, 33vw"
             />
           </div>
@@ -65,19 +65,14 @@ export function MovieBlock({
 
       case 'tall': // 1x3
         return (
-          <div className="relative h-[250px] w-full overflow-hidden rounded-lg md:h-[300px]">
+          <div className="relative h-full w-full overflow-hidden rounded-lg">
             <Image
               src={imageUrl}
               alt={movie.title}
               fill
-              className="object-cover object-[center_20%]"
+              className="object-cover"
               sizes="(max-width: 768px) 100vw, 33vw"
               priority
-              style={{
-                height: '100%',
-                objectFit: 'cover',
-                objectPosition: 'center 20%'
-              }}
             />
           </div>
         );
@@ -85,18 +80,18 @@ export function MovieBlock({
       case 'medium': // 2x3
         return (
           <div className="flex h-full w-full flex-col overflow-hidden rounded-lg">
-            <div className="relative h-2/3 w-full">
+            <div className="relative h-[70%] w-full">
               <Image
                 src={imageUrl}
                 alt={movie.title}
                 fill
-                className="object-cover object-[center_25%]"
+                className="object-cover"
                 sizes="(max-width: 768px) 100vw, 50vw"
               />
             </div>
-            <div className="flex flex-1 flex-col justify-center bg-white p-4">
-              <h3 className="text-base font-bold text-theme-primary sm:text-lg">{movie.title}</h3>
-              <p className="line-clamp-2 text-xs text-gray-600 sm:text-sm">{movie.overview}</p>
+            <div className="flex h-[30%] flex-col justify-center bg-white p-2">
+              <h3 className="line-clamp-1 font-bold text-theme-primary">{movie.title}</h3>
+              <p className="line-clamp-1 text-gray-600">{movie.overview}</p>
             </div>
           </div>
         );
@@ -104,17 +99,17 @@ export function MovieBlock({
       case 'wide': // 3x1
         return (
           <div className="flex h-full w-full overflow-hidden rounded-lg bg-white">
-            <div className="relative h-full w-1/3">
+            <div className="relative h-full w-[33%]">
               <Image
                 src={imageUrl}
                 alt={movie.title}
                 fill
-                className="object-cover object-[center_35%]"
+                className="object-cover"
                 sizes="(max-width: 768px) 33vw, 25vw"
               />
             </div>
-            <div className="flex flex-1 items-center justify-center p-4">
-              <h3 className="text-base font-bold text-theme-primary sm:text-xl">{movie.title}</h3>
+            <div className="flex w-[67%] items-center justify-center p-2">
+              <h3 className="line-clamp-1 font-bold text-theme-primary">{movie.title}</h3>
             </div>
           </div>
         );
@@ -126,12 +121,12 @@ export function MovieBlock({
               src={imageUrl}
               alt={movie.title}
               fill
-              className="object-cover object-[center_30%]"
+              className="object-cover"
               sizes="(max-width: 768px) 100vw, 75vw"
             />
-            <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/80 to-transparent p-4">
-              <h3 className="text-base font-bold text-white sm:text-xl">{movie.title}</h3>
-              <p className="line-clamp-2 text-xs text-gray-200 sm:text-sm">{movie.overview}</p>
+            <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/80 to-transparent p-2">
+              <h3 className="line-clamp-1 font-bold text-white">{movie.title}</h3>
+              <p className="line-clamp-1 text-gray-200">{movie.overview}</p>
             </div>
           </div>
         );
@@ -147,7 +142,9 @@ export function MovieBlock({
       )}
       style={{
         width: dimensions.width,
-        height: dimensions.height
+        height: dimensions.height,
+        minWidth: dimensions.width,
+        minHeight: dimensions.height
       }}
     >
       {renderContent()}

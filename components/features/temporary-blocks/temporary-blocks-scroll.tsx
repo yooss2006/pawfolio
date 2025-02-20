@@ -63,9 +63,10 @@ export function TemporaryBlocksScroll() {
     };
   }, [loadBlocks]);
 
-  // 블록 크기 계산 함수
+  // 블록 크기 계산 함수 수정
   const getBlockDimensions = (blockSize: { cols: number; rows: number }) => {
-    const baseSize = 50; // 기본 셀 크기
+    const baseSize = 40;
+
     return {
       width: blockSize.cols * baseSize,
       height: blockSize.rows * baseSize
@@ -74,36 +75,45 @@ export function TemporaryBlocksScroll() {
 
   // 블록이 없어도 컨테이너는 렌더링
   return (
-    <div className="flex h-full items-center gap-3 overflow-x-auto pb-2">
+    <div className="flex h-full gap-2 overflow-x-auto overflow-y-hidden pb-1">
       {blocks.length > 0 ? (
         blocks.map((block, index) => {
           const dimensions = getBlockDimensions(block.blockSize);
           return (
             <div
               key={`${block.movie.id}-${index}`}
-              className="flex-shrink-0"
+              className="mr-4 flex flex-shrink-0 justify-center"
               style={{
                 width: dimensions.width,
-                height: dimensions.height
+                height: '100%'
               }}
             >
-              <MovieBlock
-                movie={block.movie}
-                variant={block.variant}
-                isDraggable={true}
-                id={`draggable-block-${block.movie.id}-${index}`}
-                dimensions={dimensions}
-                className={cn(
-                  'h-full w-full',
-                  '[&_h3]:text-xs [&_img]:!relative [&_img]:!h-full [&_img]:!w-full [&_img]:!object-cover',
-                  '[&_p]:!line-clamp-1 [&_p]:!text-[10px]'
-                )}
-              />
+              <div
+                style={{
+                  width: dimensions.width,
+                  height: dimensions.height
+                }}
+              >
+                <MovieBlock
+                  movie={block.movie}
+                  variant={block.variant}
+                  isDraggable={true}
+                  id={`draggable-block-${block.movie.id}-${index}`}
+                  dimensions={dimensions}
+                  className={cn(
+                    'h-full w-full',
+                    '[&_h3]:!text-[9px] [&_img]:!relative [&_img]:!h-full [&_img]:!w-full [&_img]:!object-cover',
+                    '[&_p]:!line-clamp-1 [&_p]:!text-[7px]'
+                  )}
+                />
+              </div>
             </div>
           );
         })
       ) : (
-        <div className="flex w-full items-center justify-center text-sm text-gray-500">
+        <div className="flex w-full items-center justify-center text-xs text-gray-500">
+          {' '}
+          {/* 텍스트 크기 축소 */}
           블록을 추가해주세요
         </div>
       )}
