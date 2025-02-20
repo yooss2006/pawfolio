@@ -27,14 +27,8 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={cn(`${geistSans.variable} ${geistMono.variable}`, 'bg-gray-100')}>
-        <main className="mx-auto flex h-full max-w-[600px] flex-col bg-white shadow-2xl">
-          <header className="w-full bg-theme-primary py-4 text-center font-bold text-white">
-            <h1 className="text-lg tracking-wide">Pawfolio</h1>
-          </header>
-          <div className="flex-1">{children}</div>
-          <footer className="w-full bg-white/70 py-2 text-center text-sm text-theme-secondary/70">
-            &copy; 2025 Pawfolio Company
-          </footer>
+        <main className="mx-auto flex h-screen max-w-[600px] flex-col bg-white">
+          {children}
           <Toaster />
         </main>
       </body>

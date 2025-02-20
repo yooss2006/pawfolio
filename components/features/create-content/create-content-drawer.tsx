@@ -6,9 +6,13 @@ import { cn } from '@/lib/utils';
 
 interface CreateContentDrawerProps {
   onButtonClick?: () => void;
+  className?: string;
 }
 
-export default function CreateContentDrawer({ onButtonClick }: CreateContentDrawerProps) {
+export default function CreateContentDrawer({
+  onButtonClick,
+  className
+}: CreateContentDrawerProps) {
   return (
     <Drawer
       onOpenChange={(open) => {
@@ -18,16 +22,8 @@ export default function CreateContentDrawer({ onButtonClick }: CreateContentDraw
       }}
     >
       <DrawerTrigger asChild>
-        <Button
-          className={cn(
-            'flex h-14 w-14 items-center justify-center rounded-full',
-            'bg-white/90 shadow-lg backdrop-blur-sm',
-            'border border-theme-primary/10',
-            'hover:border-theme-primary/20 hover:bg-theme-primary/5',
-            'transform transition-all duration-300 hover:scale-105'
-          )}
-        >
-          <PackagePlus className="!size-6 text-theme-primary" />
+        <Button className={className}>
+          <PackagePlus className="size-6 text-white" />
         </Button>
       </DrawerTrigger>
 

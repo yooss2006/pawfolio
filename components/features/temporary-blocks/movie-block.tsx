@@ -2,17 +2,19 @@ import { Movie } from '@/lib/types/movie';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { useDraggable } from '@dnd-kit/core';
+import { BlockVariant } from '@/lib/constants/blocks';
+import { DraggableBlock } from './draggable-block';
 
 interface MovieBlockProps {
   movie: Movie;
-  variant: 'tiny' | 'tall' | 'medium' | 'wide' | 'large';
-  className?: string;
+  variant: BlockVariant;
   isDraggable?: boolean;
   id?: string;
-  dimensions?: {
+  dimensions: {
     width: number;
     height: number;
   };
+  className?: string;
 }
 
 const TMDB_IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
@@ -20,10 +22,10 @@ const TMDB_IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
 export function MovieBlock({
   movie,
   variant,
-  className,
-  isDraggable,
+  isDraggable = false,
   id,
-  dimensions
+  dimensions,
+  className
 }: MovieBlockProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: id || `movie-${movie.id}`,
@@ -136,25 +138,36 @@ export function MovieBlock({
     }
   };
 
-  return (
+  const blockContent = (
     <div
-      ref={isDraggable ? setNodeRef : undefined}
-      {...(isDraggable ? { ...attributes, ...listeners } : {})}
-      style={style}
       className={cn(
-        'h-full w-full p-2',
-        className,
-        isDraggable && 'cursor-grab active:cursor-grabbing'
+        'group relative overflow-hidden rounded-lg bg-white shadow-md',
+        'transition-transform duration-200 hover:scale-[1.02] hover:shadow-lg',
+        className
       )}
+      style={{
+        width: dimensions.width,
+        height: dimensions.height
+      }}
     >
-      <div
-        className={cn(
-          'h-full w-full shadow-lg transition-all',
-          'hover:shadow-xl hover:shadow-theme-primary/10'
-        )}
-      >
-        {renderContent()}
-      </div>
+      {renderContent()}
     </div>
   );
+
+  if (isDraggable) {
+    return (
+      <DraggableBlock
+        id={id!}
+        data={{
+          movie,
+          variant,
+          dimensions
+        }}
+      >
+        {blockContent}
+      </DraggableBlock>
+    );
+  }
+
+  return blockContent;
 }
