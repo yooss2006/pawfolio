@@ -3,8 +3,8 @@ import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { useDraggable } from '@dnd-kit/core';
 import { BlockVariant } from '@/lib/constants/blocks';
-import { DraggableBlock } from './draggable-block';
 import { BLOCK_SIZES } from '@/lib/constants/blocks';
+import { CSSProperties } from 'react';
 
 interface MovieBlockProps {
   movie: Movie;
@@ -40,11 +40,13 @@ export function MovieBlock({
   });
 
   const style = transform
-    ? {
+    ? ({
         transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
         zIndex: 999,
-        opacity: isDragging ? 0 : 1
-      }
+        opacity: isDragging ? 0.3 : 1,
+        transition: 'opacity 0.2s ease',
+        position: 'relative' as const
+      } as CSSProperties)
     : undefined;
 
   const imageUrl = `${TMDB_IMAGE_URL}${movie.poster_path}`;
@@ -67,15 +69,17 @@ export function MovieBlock({
     <div
       className={cn(
         'group relative overflow-hidden rounded-lg bg-white shadow-md',
-        'transition-transform duration-200 hover:scale-[1.02] hover:shadow-lg',
+        'transition-all duration-200 hover:scale-[1.02] hover:shadow-lg',
         'aspect-square',
+        isDragging ? 'shadow-lg ring-2 ring-theme-primary/50' : '',
         className
       )}
       style={{
         width: dimensions.width,
         height: dimensions.height,
         minWidth: dimensions.width,
-        minHeight: dimensions.height
+        minHeight: dimensions.height,
+        ...(isDraggable && style)
       }}
     >
       {/* 영화 포스터 이미지 */}
@@ -84,7 +88,7 @@ export function MovieBlock({
           src={imageUrl}
           alt={movie.title}
           fill
-          className="object-cover"
+          className={cn('object-cover', isDragging ? 'brightness-90' : '')}
           sizes={`(max-width: 400px) ${dimensions.width}px, (max-width: 768px) ${dimensions.width}px, ${dimensions.width}px`}
         />
 
@@ -140,16 +144,19 @@ export function MovieBlock({
 
   if (isDraggable) {
     return (
-      <DraggableBlock
-        id={id!}
-        data={{
-          movie,
-          variant,
-          dimensions
-        }}
+      <div
+        ref={setNodeRef}
+        {...attributes}
+        {...listeners}
+        style={style}
+        className={cn(
+          'relative touch-none',
+          isDragging && ['z-[9999]', 'pointer-events-none'],
+          !isDragging && 'pointer-events-auto'
+        )}
       >
         {blockContent}
-      </DraggableBlock>
+      </div>
     );
   }
 

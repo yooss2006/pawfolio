@@ -18,10 +18,8 @@ interface BlockData {
 
 export function TemporaryBlocksScroll() {
   const [blocks, setBlocks] = useState<BlockData[]>([]);
-  // 화면 크기에 따른 동적 높이 조정을 위한 상태
-  const [containerHeight, setContainerHeight] = useState(96); // h-24 기본값
+  const [containerHeight, setContainerHeight] = useState(96);
 
-  // 화면 크기에 따라 컨테이너 높이 설정
   useEffect(() => {
     const updateHeightByWidth = () => {
       const width = window.innerWidth;
@@ -85,46 +83,32 @@ export function TemporaryBlocksScroll() {
     };
   }, [loadBlocks]);
 
-  // 반응형 블록 크기 계산 - 완전한 정사각형으로 수정
   const getBlockDimensions = () => {
-    // 화면 너비에 따라 블록 크기 조정
     const width = typeof window !== 'undefined' ? window.innerWidth : 1024;
+    let baseSize = width < 400 ? 90 : width < 500 ? 100 : width < 768 ? 110 : 120;
 
-    // 기본 사이즈 결정 (화면 크기에 따라)
-    let baseSize =
-      width < 400
-        ? 90 // 모바일에서 더 작게
-        : width < 500
-          ? 100
-          : width < 768
-            ? 110 // 태블릿
-            : 120; // 데스크탑
-
-    // 컨테이너 높이에 따른 정사각형 크기 제한
-    const maxHeight = containerHeight - 16; // 패딩과 마진 고려
-
-    // 정사각형을 만들기 위해 너비와 높이 중 작은 값으로 통일
+    const maxHeight = containerHeight - 16;
     const squareSize = Math.min(baseSize, maxHeight);
 
     return {
       width: squareSize,
-      height: squareSize // 너비와 높이를 동일하게 설정
+      height: squareSize
     };
   };
 
   return (
     <div
-      className="flex overflow-x-auto overflow-y-hidden pb-2"
+      className="relative flex w-full overflow-x-auto overflow-y-hidden pb-2"
       style={{ height: containerHeight }}
     >
       {blocks.length > 0 ? (
-        <div className="flex items-center gap-4 px-2">
+        <div className="flex min-w-0 items-center gap-4 px-2">
           {blocks.map((block, index) => {
             const dimensions = getBlockDimensions();
             return (
               <div
                 key={`${block.movie.id}-${index}`}
-                className="flex-shrink-0"
+                className="relative flex-shrink-0"
                 style={{ height: dimensions.height }}
               >
                 <MovieBlock

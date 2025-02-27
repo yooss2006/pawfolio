@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={cn(`${geistSans.variable} ${geistMono.variable}`, 'bg-gray-100')}>
-        <main className="mx-auto flex h-screen max-w-[600px] flex-col bg-white">
+        <main className="relative mx-auto flex h-screen max-w-[600px] flex-col bg-white">
           {children}
           <Toaster />
         </main>
