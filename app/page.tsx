@@ -14,12 +14,14 @@ import { MovieBlock } from '@/components/features/temporary-blocks/movie-block';
 import { cn } from '@/lib/utils';
 import { TemporaryBlocksScroll } from '@/components/features/temporary-blocks/temporary-blocks-scroll';
 import { useToast } from '@/hooks/use-toast';
+import { BLOCK_SIZES, BlockVariant } from '@/lib/constants/blocks';
+import { GridMovieBlock } from '@/components/features/create-content/drawer-contents/grid-movie-block';
 
 export default function Home() {
   const [showBlocks, setShowBlocks] = useState(false);
   const [activeBlock, setActiveBlock] = useState<{
     movie: any;
-    variant: any;
+    variant: BlockVariant;
     dimensions?: {
       width: number;
       height: number;
@@ -102,26 +104,24 @@ export default function Home() {
       <DragOverlay dropAnimation={{ duration: 150, easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)' }}>
         {activeBlock ? (
           <div
+            className="pointer-events-none"
             style={
               activeBlock.dimensions
                 ? {
-                    width: activeBlock.dimensions.width,
-                    height: activeBlock.dimensions.height
+                    // 블록 타입에 따른 원래 비율로 크기 조정
+                    width: activeBlock.dimensions.width * BLOCK_SIZES[activeBlock.variant].cols,
+                    height: activeBlock.dimensions.width * BLOCK_SIZES[activeBlock.variant].rows
                   }
                 : undefined
             }
           >
-            <MovieBlock
+            <GridMovieBlock
               movie={activeBlock.movie}
               variant={activeBlock.variant}
-              dimensions={activeBlock.dimensions || { width: 200, height: 200 }}
               className={cn(
-                'pointer-events-none shadow-xl',
-                'scale-105 ring-2 ring-theme-primary',
-                '[&_h3]:text-sm [&_img]:!relative [&_img]:!h-full [&_img]:!w-full [&_img]:!object-cover',
-                activeBlock.isLargeScreen
-                  ? '[&_p]:text-xs'
-                  : '[&_h3]:!text-xs [&_p]:!line-clamp-1 [&_p]:!text-[10px]'
+                'pointer-events-none h-full w-full shadow-xl',
+                'ring-2 ring-theme-primary',
+                'aspect-auto' // 정사각형 비율을 강제로 해제하고 원래 비율 적용
               )}
             />
           </div>

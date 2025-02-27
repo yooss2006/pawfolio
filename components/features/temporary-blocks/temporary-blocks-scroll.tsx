@@ -109,7 +109,11 @@ export function TemporaryBlocksScroll() {
               <div
                 key={`${block.movie.id}-${index}`}
                 className="relative flex-shrink-0"
-                style={{ height: dimensions.height }}
+                style={{
+                  height: dimensions.height,
+                  width: dimensions.width,
+                  position: 'relative'
+                }}
               >
                 <MovieBlock
                   movie={block.movie}
