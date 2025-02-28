@@ -108,9 +108,11 @@ export default function Home() {
             style={
               activeBlock.dimensions
                 ? {
-                    // 블록 타입에 따른 원래 비율로 크기 조정
-                    width: activeBlock.dimensions.width * BLOCK_SIZES[activeBlock.variant].cols,
-                    height: activeBlock.dimensions.width * BLOCK_SIZES[activeBlock.variant].rows
+                    // 블록 타입에 따른 원래 비율로 크기 조정 (0.75배 축소)
+                    width:
+                      activeBlock.dimensions.width * BLOCK_SIZES[activeBlock.variant].cols * 0.75,
+                    height:
+                      activeBlock.dimensions.width * BLOCK_SIZES[activeBlock.variant].rows * 0.75
                   }
                 : undefined
             }

@@ -73,9 +73,11 @@ export function MovieBlock({
   // 블록의 실제 종횡비 계산
   const aspectRatio = blockSizeConfig.cols / blockSizeConfig.rows;
 
-  // 드래그 시 원래 블록 크기 비율 적용을 위한 치수 계산
-  const dragWidth = isDragging ? dimensions.width * blockSizeConfig.cols : dimensions.width;
-  const dragHeight = isDragging ? dimensions.width * blockSizeConfig.rows : dimensions.height;
+  // 드래그 시 원래 블록 크기 비율 적용을 위한 치수 계산 (0.75배 축소)
+  const dragWidth = isDragging ? dimensions.width * blockSizeConfig.cols * 0.75 : dimensions.width;
+  const dragHeight = isDragging
+    ? dimensions.width * blockSizeConfig.rows * 0.75
+    : dimensions.height;
 
   // 블록 내용 - 드래그 중일 때와 아닐 때 다르게 표시
   const blockContent = (
