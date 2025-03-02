@@ -16,11 +16,12 @@ import { TemporaryBlocksScroll } from '@/components/features/temporary-blocks/te
 import { useToast } from '@/hooks/use-toast';
 import { BLOCK_SIZES, BlockVariant } from '@/lib/constants/blocks';
 import { GridMovieBlock } from '@/components/features/create-content/drawer-contents/grid-movie-block';
+import { Movie } from '@/lib/types/movie';
 
 export default function Home() {
   const [showBlocks, setShowBlocks] = useState(false);
   const [activeBlock, setActiveBlock] = useState<{
-    movie: any;
+    movie: Movie;
     variant: BlockVariant;
     dimensions?: {
       width: number;
@@ -78,7 +79,7 @@ export default function Home() {
       <div className="relative flex h-[100dvh] flex-col">
         {/* 그리드 영역 - 화면 크기에 따라 유동적으로 조절 */}
         <div className="min-h-0 flex-1">
-          <GridContainer />
+          <GridContainer activeBlock={activeBlock} />
         </div>
 
         {/* 하단 블록 저장소 영역 - 고정 높이 */}

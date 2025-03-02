@@ -105,10 +105,10 @@ export function MovieSearch({ onMovieSelect, searchState }: MovieSearchProps) {
       {isLoading && <LoadingState />}
 
       {/* 검색 결과가 없을 경우 */}
-      {!isLoading && hasSearched && movies.length === 0 && <NoResults />}
+      {!isLoading && hasSearched && movies?.length === 0 && <NoResults />}
 
       {/* 검색 결과 리스트 */}
-      {!isLoading && movies.length > 0 && (
+      {!isLoading && movies?.length > 0 && (
         <>
           <MovieList movies={movies} onMovieSelect={onMovieSelect} />
           <Pagination

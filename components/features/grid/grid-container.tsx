@@ -1,6 +1,7 @@
 import { cn } from '@/lib/utils';
 import { useDroppable, useDndMonitor } from '@dnd-kit/core';
 import { useEffect, useState, useRef } from 'react';
+import { BLOCK_SIZES, BlockVariant } from '@/lib/constants/blocks';
 
 const GRID_COLS = 4;
 const GRID_ROWS = 6;
@@ -13,19 +14,45 @@ const CELL_SIZES = {
   MOBILE: 65 // 모바일
 };
 
-export default function GridContainer() {
+interface GridContainerProps {
+  activeBlock: {
+    movie: any;
+    variant: BlockVariant;
+    dimensions?: {
+      width: number;
+      height: number;
+    };
+    isLargeScreen?: boolean;
+  } | null;
+}
+
+export default function GridContainer({ activeBlock }: GridContainerProps) {
   const [occupiedCells, setOccupiedCells] = useState<Set<number>>(new Set());
   const [cellSize, setCellSize] = useState(CELL_SIZES.DEFAULT);
   const [isDragging, setIsDragging] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerHeight, setContainerHeight] = useState(0);
   const [containerWidth, setContainerWidth] = useState(0);
+  const [hoveredCellIndex, setHoveredCellIndex] = useState<number | null>(null);
 
   // dnd-kit의 드래그 이벤트 모니터링
   useDndMonitor({
     onDragStart: () => setIsDragging(true),
-    onDragEnd: () => setIsDragging(false),
-    onDragCancel: () => setIsDragging(false)
+    onDragEnd: () => {
+      setIsDragging(false);
+      setHoveredCellIndex(null);
+    },
+    onDragCancel: () => {
+      setIsDragging(false);
+      setHoveredCellIndex(null);
+    },
+    onDragOver: (event) => {
+      const { over } = event;
+      if (over && over.id.toString().includes('grid-cell')) {
+        const cellIndex = parseInt(over.id.toString().split('-')[2]);
+        setHoveredCellIndex(cellIndex);
+      }
+    }
   });
 
   // 화면 크기에 따른 셀 크기 및 컨테이너 높이 조정
@@ -76,10 +103,69 @@ export default function GridContainer() {
     }
   }, []);
 
+  // 블록 크기에 따라 하이라이트할 셀 인덱스 계산
+  const getHighlightedCells = (baseIndex: number): { validCells: number[]; invalidCells: number[] } => {
+    if (!activeBlock || hoveredCellIndex === null) return { validCells: [], invalidCells: [] };
+
+    const blockSize = BLOCK_SIZES[activeBlock.variant];
+    const { cols, rows } = blockSize;
+    
+    const validCells: number[] = [];
+    const invalidCells: number[] = [];
+    const baseRow = Math.floor(baseIndex / GRID_COLS);
+    const baseCol = baseIndex % GRID_COLS;
+    
+    // 블록이 그리드 범위를 벗어나는지 확인
+    const isOutOfBounds = baseCol + cols > GRID_COLS || baseRow + rows > GRID_ROWS;
+    
+    // 그리드 범위를 벗어나는 경우 모든 셀을 invalidCells에 추가
+    if (isOutOfBounds) {
+      // 블록이 차지하는 모든 셀 인덱스 계산 (그리드 내에 있는 셀만)
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const currentRow = baseRow + r;
+          const currentCol = baseCol + c;
+          
+          // 그리드 범위 내에 있는 셀만 처리
+          if (currentRow < GRID_ROWS && currentCol < GRID_COLS) {
+            const cellIndex = currentRow * GRID_COLS + currentCol;
+            invalidCells.push(cellIndex);
+          }
+        }
+      }
+      return { validCells: [], invalidCells };
+    }
+    
+    // 그리드 범위 내에 있는 경우 점유 여부에 따라 분류
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const cellIndex = (baseRow + r) * GRID_COLS + (baseCol + c);
+        
+        // 이미 점유된 셀인지 확인
+        if (occupiedCells.has(cellIndex)) {
+          invalidCells.push(cellIndex);
+        } else {
+          validCells.push(cellIndex);
+        }
+      }
+    }
+    
+    // 점유된 셀이 하나라도 있으면 모든 셀을 invalidCells로 표시
+    if (invalidCells.length > 0) {
+      return { validCells: [], invalidCells: [...validCells, ...invalidCells] };
+    }
+    
+    return { validCells, invalidCells };
+  };
+
   // 각 그리드 셀을 드롭 가능한 영역으로 만듦
   const renderGridItems = () => {
     return Array.from({ length: TOTAL_CELLS }).map((_, index) => {
       const isOccupied = occupiedCells.has(index);
+      const { validCells, invalidCells } = hoveredCellIndex !== null ? getHighlightedCells(hoveredCellIndex) : { validCells: [], invalidCells: [] };
+      
+      const isValid = validCells.includes(index);
+      const isInvalid = invalidCells.includes(index);
 
       const { setNodeRef, isOver } = useDroppable({
         id: `grid-cell-${index}`,
@@ -94,17 +180,21 @@ export default function GridContainer() {
             'aspect-square transition-all duration-200',
             // 드래그 중일 때만 기본 테두리 표시
             isDragging ? 'border border-gray-300 bg-white' : 'border-transparent bg-white',
-            isOver && !isOccupied
+            isValid
               ? 'scale-105 border-2 border-green-500 bg-green-50'
-              : isOver && isOccupied
+              : isInvalid
                 ? 'scale-105 border-2 border-red-500 bg-red-50'
-                : isOccupied
-                  ? isDragging
-                    ? 'border-gray-400 bg-gray-50'
-                    : 'border-transparent bg-gray-50'
-                  : isDragging
-                    ? 'hover:border-gray-400 hover:bg-gray-50'
-                    : 'hover:bg-gray-50'
+                : isOver && !isOccupied
+                  ? 'scale-105 border-2 border-green-500 bg-green-50'
+                  : isOver && isOccupied
+                    ? 'scale-105 border-2 border-red-500 bg-red-50'
+                    : isOccupied
+                      ? isDragging
+                        ? 'border-gray-400 bg-gray-50'
+                        : 'border-transparent bg-gray-50'
+                      : isDragging
+                        ? 'hover:border-gray-400 hover:bg-gray-50'
+                        : 'hover:bg-gray-50'
           )}
           style={{
             width: cellSize,
