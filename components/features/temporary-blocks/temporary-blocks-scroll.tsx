@@ -5,6 +5,7 @@ import { Movie } from '@/lib/types/movie';
 import { BlockVariant } from '@/lib/constants/blocks';
 import { MovieBlock } from './movie-block';
 import { cn } from '@/lib/utils';
+import { useDroppable, useDndMonitor } from '@dnd-kit/core';
 
 interface BlockData {
   movie: Movie;
@@ -19,6 +20,29 @@ interface BlockData {
 export function TemporaryBlocksScroll() {
   const [blocks, setBlocks] = useState<BlockData[]>([]);
   const [containerHeight, setContainerHeight] = useState(96);
+  const [isDraggingGridBlock, setIsDraggingGridBlock] = useState(false);
+  
+  // 임시 블록 저장소 영역을 드롭 가능한 영역으로 만듦
+  const { setNodeRef, isOver } = useDroppable({
+    id: 'temporary-blocks-container',
+    data: { isTemporaryBlocksContainer: true },
+    disabled: !isDraggingGridBlock // 그리드 블록을 드래그할 때만 드롭 가능
+  });
+  
+  // 드래그 이벤트 모니터링
+  useDndMonitor({
+    onDragStart: (event) => {
+      const { active } = event;
+      const { isGridBlock } = active.data.current || {};
+      setIsDraggingGridBlock(!!isGridBlock);
+    },
+    onDragEnd: () => {
+      setIsDraggingGridBlock(false);
+    },
+    onDragCancel: () => {
+      setIsDraggingGridBlock(false);
+    }
+  });
 
   useEffect(() => {
     const updateHeightByWidth = () => {
@@ -53,33 +77,56 @@ export function TemporaryBlocksScroll() {
   const loadBlocks = useCallback(() => {
     try {
       const storedBlocks = localStorage.getItem('blocks');
-      if (!storedBlocks) return;
+      if (!storedBlocks) {
+        setBlocks([]);
+        return;
+      }
 
       const parsedBlocks = JSON.parse(storedBlocks);
-      if (!Array.isArray(parsedBlocks) || parsedBlocks.length === 0) return;
+      if (!Array.isArray(parsedBlocks)) {
+        setBlocks([]);
+        return;
+      }
 
       const validBlocks = parsedBlocks.filter(isValidBlock);
-      setBlocks(validBlocks);
+      
+      if (JSON.stringify(blocks) !== JSON.stringify(validBlocks)) {
+        setBlocks(validBlocks);
+      }
     } catch (error) {
       console.error('블록 데이터 로드 중 오류:', error);
+      setBlocks([]);
     }
-  }, [isValidBlock]);
+  }, [isValidBlock, blocks]);
 
   useEffect(() => {
     loadBlocks();
 
+    let debounceTimer: NodeJS.Timeout;
+    
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'blocks') {
-        loadBlocks();
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+          loadBlocks();
+        }, 100);
       }
+    };
+    
+    const handleLocalStorageChange = () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        loadBlocks();
+      }, 100);
     };
 
     window.addEventListener('storage', handleStorageChange);
-    window.addEventListener('localStorageChange', loadBlocks);
+    window.addEventListener('localStorageChange', handleLocalStorageChange);
 
     return () => {
       window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('localStorageChange', loadBlocks);
+      window.removeEventListener('localStorageChange', handleLocalStorageChange);
+      clearTimeout(debounceTimer);
     };
   }, [loadBlocks]);
 
@@ -98,7 +145,12 @@ export function TemporaryBlocksScroll() {
 
   return (
     <div
-      className="relative flex w-full overflow-x-auto overflow-y-hidden pb-2"
+      ref={setNodeRef}
+      className={cn(
+        "relative flex w-full overflow-x-auto overflow-y-hidden pb-2 transition-all duration-200",
+        isDraggingGridBlock && isOver && "bg-green-50 ring-2 ring-green-500 rounded-lg",
+        isDraggingGridBlock && !isOver && "ring-1 ring-gray-300 rounded-lg"
+      )}
       style={{ height: containerHeight }}
     >
       {blocks.length > 0 ? (

@@ -35,7 +35,8 @@ export function MovieBlock({
       movie,
       variant,
       dimensions,
-      isLargeScreen: typeof window !== 'undefined' ? window.innerWidth > 600 : true
+      isLargeScreen: typeof window !== 'undefined' ? window.innerWidth > 600 : true,
+      blockId: id
     },
     disabled: !isDraggable
   });
